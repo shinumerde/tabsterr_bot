@@ -1,1 +1,1 @@
-worker: python3 main.py -b 0.0.0.0:$PORT
+web: gunicorn main.py -b 0.0.0.0:$PORT
