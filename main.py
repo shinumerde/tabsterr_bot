@@ -35,8 +35,8 @@ def send_welcome(message):
         source_page = driver.page_source
         soup = BeautifulSoup(source_page, 'lxml')
         fut_js = soup.find('script', type="application/json").text
-        artist = re.findall('"artist":"[A-Za-z -.]+"', fut_js)
-        song = re.findall('"title":"[A-Za-z -.]+"', fut_js)
+        artist = re.findall('"artist":"[A-Za-z -\/\']+"', fut_js)
+        song = re.findall('"title":"[A-Za-z -\/\']+"', fut_js)
         revision_id = re.findall('"revisionId":\w\d+', fut_js)
         for i in revision_id:
             a = re.findall('\d+', i)
