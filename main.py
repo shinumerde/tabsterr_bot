@@ -35,8 +35,12 @@ def send_welcome(message):
         source_page = driver.page_source
         soup = BeautifulSoup(source_page, 'lxml')
         fut_js = soup.find('script', type="application/json").text
-        artist = re.findall('"artist":"[A-Za-z -\/\']+"', fut_js)
-        song = re.findall('"title":"[A-Za-z -\/\']+"', fut_js)
+        artist_raw = re.findall("""("artist":"[A-Za-z!&\\\\u002F\\\'\- \-&]+")""", fut_js)
+        if 'u002F' in artist_raw[0]:
+            artist = artist_raw[0].replace('u002F', '')
+        else:
+            artist = artist_raw[0]
+        song = re.findall("""("title":"[A-Za-z!&\\\\u002F\\\'\- \-&]+")""", fut_js)
         revision_id = re.findall('"revisionId":\w\d+', fut_js)
         for i in revision_id:
             a = re.findall('\d+', i)
@@ -49,12 +53,11 @@ def send_welcome(message):
         gp_url = str(gp_raw_link)
         gp_link = re.findall('[A-Za-z:\/ 0-9.]+', gp_url)
         r = requests.get(gp_link[0])
-
-        filename = str(artist)[12:-3] + ' - ' + str(song)[11:-3] + '.gp5'
-        print(filename)
-
+        filename_raw = str(artist)[10:-1] + ' - ' + str(song)[11:-3] + '.gp5'
+        filename = filename_raw.replace('\\', '')
+        if '&' in filename:
+            filename = filename.replace('&', 'and')
         open(filename, 'wb').write(r.content)
-
         bot.send_document(message.chat.id, open(filename, 'rb'))
         os.remove(filename)
 
