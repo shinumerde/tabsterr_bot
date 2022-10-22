@@ -35,12 +35,14 @@ def send_welcome(message):
         source_page = driver.page_source
         soup = BeautifulSoup(source_page, 'lxml')
         fut_js = soup.find('script', type="application/json").text
-        artist_raw = re.findall("""("artist":"[A-Za-z!&\\\\u002F\\\'\- \-&]+")""", fut_js)
-        if 'u002F' in artist_raw[0]:
-            artist = artist_raw[0].replace('u002F', '')
-        else:
-            artist = artist_raw[0]
-        song = re.findall("""("title":"[A-Za-z!&\\\\u002F\\\'\- \-&]+")""", fut_js)
+        print(fut_js)
+        artist_raw = re.findall("""("artist":"[\.?A-Za-zА-Яа-я!()&\\\\u002F\\\'\- \-&]+")""", fut_js)
+        artist = re.sub(r'\?|:|!|u002F|\\|\/|\.|\(|\)', '', artist_raw[0])
+        print(artist)
+        song_raw = re.findall("""("title":"[\.?A-Za-zА-Яа-я!\(\)&\\\\u002F\\\'\- \-&]+")""", fut_js)
+        print(song_raw[0])
+        song = re.sub(r'\?|:|!|u002F|\\|\/|\.', '', song_raw[0])
+        print(song)
         revision_id = re.findall('"revisionId":\w\d+', fut_js)
         for i in revision_id:
             a = re.findall('\d+', i)
@@ -49,11 +51,11 @@ def send_welcome(message):
         source_page = driver.page_source
         soup = BeautifulSoup(source_page, 'lxml')
         gp5 = soup.find('div', {'id': 'webkit-xml-viewer-source-xml'}).text
-        gp_raw_link = re.findall('.+gp5', gp5)
+        gp_raw_link = re.findall('.+gp5|.+gp4|.+gp3', gp5)
         gp_url = str(gp_raw_link)
-        gp_link = re.findall('[A-Za-z:\/ 0-9.]+', gp_url)
+        gp_link = re.findall('[A-Za-z:\/ 0-9.\-]+', gp_url)
         r = requests.get(gp_link[0])
-        filename_raw = str(artist)[10:-1] + ' - ' + str(song)[11:-3] + '.gp5'
+        filename_raw = str(artist)[9:-1] + ' - ' + str(song)[8:-1] + '.gp5'
         filename = filename_raw.replace('\\', '')
         if '&' in filename:
             filename = filename.replace('&', 'and')
