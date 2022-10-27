@@ -18,16 +18,25 @@ options.add_argument('window-size=0x0')
 
 bot = telebot.TeleBot(data.TOKEN)
 
+
 @bot.message_handler(commands=['start'])
 def start(message):
-    markup = types.InlineKeyboardMarkup()
-    button = types.InlineKeyboardButton('www.songsterr.com', url='https://www.songsterr.com/')
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button = types.KeyboardButton('songsterr')
     markup.add(button)
     bot.send_message(message.chat.id, 'Для работы данному боту необходима ссылка на табулатуру с сайта www.songsterr.com', reply_markup=markup)
 
 
 @bot.message_handler(content_types=['text'])
-def send_welcome(message):
+def get_songsterr(message):
+    if message.text == 'songsterr':
+        bot.send_message(message.chat.id, 'https://www.songsterr.com/')
+    else:
+        get_tab(message)
+
+
+@bot.message_handler(content_types=['text'])
+def get_tab(message):
     try:
         url = message.text
         driver = webdriver.Chrome(executable_path="chromedriver", chrome_options=options)
