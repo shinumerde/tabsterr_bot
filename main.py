@@ -16,7 +16,7 @@ options.add_argument('--disable-blink-features=AutomationControlled')
 options.add_argument("headless")
 options.add_argument('window-size=0x0')
 
-bot = telebot.TeleBot(data.TOKEN)
+bot = telebot.TeleBot(TOKEN)
 
 
 @bot.message_handler(commands=['start'])
