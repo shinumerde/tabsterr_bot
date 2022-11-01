@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import InvalidArgumentException
 
-import data
 
 options = webdriver.ChromeOptions()
 options.binary_location = os.environ.get('GOOGLE_CHROME_SHIM', None)
