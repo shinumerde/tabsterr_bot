@@ -39,7 +39,7 @@ def get_songsterr(message):
 def get_tab(message):
     try:
         url = message.text
-        driver = webdriver.Chrome(executable_path="chromedriver", chrome_options=options)
+        driver = webdriver.Chrome(executable_path="chromedriver", options=options)
         driver.get(url=url)
         source_page = driver.page_source
         soup = BeautifulSoup(source_page, 'lxml')
